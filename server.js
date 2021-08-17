@@ -27,41 +27,49 @@ class Forecast {
 server.get('/weather', (req, res) => {
 
   //   res.send('inside /weather');
-  let requestWeather = {
-    lat: req.query.lat,
-    lon: req.query.lon,
-    cityName: req.query.q,
-  };
+  try {
+    let requestWeather = {
+      lat: req.query.lat,
+      lon: req.query.lon,
+      cityName: req.query.q,
+    };
 
-  //   console.log(requestWeather);
-  //   console.log(requestWeather.cityName);
+    //   console.log(requestWeather);
+    //   console.log(requestWeather.cityName);
 
-  let findWeather = weatherData.find((weather) => {
 
-    //   console.log(weather.city_name.toLowerCase(), requestWeather.cityName.toLowerCase(), weather.lat, requestWeather.lat, weather.lon, requestWeather.lon);
+    let findWeather = weatherData.find((weather) => {
+      //LOCATIONIQ COORDS DO NOT MATCH JSON FILE
+      if (weather.city_name.toLowerCase() === requestWeather.cityName.toLowerCase()) {
 
-    // if (weather.city_name.toLowerCase() === requestWeather.cityName.toLowerCase() && weather.lat === requestWeather.lat && weather.lon === requestWeather.lon) {
 
-    //LOCATIONIQ COORDS DO NOT MATCH JSON FILE
-    if (weather.city_name.toLowerCase() === requestWeather.cityName.toLowerCase()) {
+        let response = weather.data.map(element => {
+          return new Forecast(element.weather.description, element.low_temp, element.max_temp, element.datetime);
+        });
+        console.log(response);
+        res.send(response);
+      }
 
-      let response = weather.data.map(element => {
-        return new Forecast(element.weather.description, element.low_temp, element.max_temp, element.datetime);
-      });
-      console.log(response);
-      res.send(response);
-    }
-  });
 
-  return findWeather;
+
+    });
+    return findWeather;
+
+  }
+
+  catch (error) {
+    console.log(error);
+    res.status(500).send('error code: 500');
+  }
 
 });
+
 
 server.get('*', (req, res) => {
   res.status(404).send('error 404: page not found');
 });
 
 server.listen(PORT, () => {
-  console.log('bbbbbb', PORT);
+  console.log('Listening on Port:', PORT);
 });
 
