@@ -10,6 +10,8 @@ const getWeatherHandler = require('./modules/weather.js');
 
 const getMoviesHandler = require('./modules/movies.js');
 
+const getYelpHandler = require('./modules/yelp.js');
+
 // const weatherData = require('./data/weather.json');
 
 const server = express();
@@ -31,6 +33,7 @@ let notFoundHandler = (req, res) => {
 // ROUTES:
 server.get('/weather', getWeatherHandler);
 server.get('/movies', getMoviesHandler);
+server.get('/yelp', getYelpHandler);
 server.get('*', notFoundHandler);
 
 
